@@ -77,7 +77,7 @@
             <button class="menu-btn" onclick="startStudy('yueyanglou')">岳陽樓記</button>
             <button class="menu-btn" onclick="startStudy('quanxue')">勸學(節錄)</button>
             <button class="menu-btn" onclick="startStudy('shishuo')">師說</button>
-            <button class="menu-btn disabled">廉頗藺相如列傳</button>
+            <button class="menu-btn" onclick="startStudy('lianpo')">廉頗藺相如列傳</button>
             <button class="menu-btn disabled">論仁論孝論君子</button>
             <button class="menu-btn disabled">魚我所欲也</button>
             <button class="menu-btn disabled">出師表</button>
@@ -285,6 +285,48 @@
         { f: "「聖益聖，愚益愚」<br>運用了甚麼修辭？", b: "手法：對比、頂真。", t: "修辭" },
         { f: "「巫、醫、樂師、百工之人」<br>運用了甚麼修辭？", b: "手法：排比。", t: "修辭" },
         { f: "「句讀之不知，惑之不解」<br>屬於甚麼特殊句式？", b: "句式：倒裝句 (賓語前置)。<br>原序：不知句讀，不解惑。", t: "句式" }
+    ]
+},
+            lianpo: {
+    title: "廉頗藺相如列傳",
+    data: [
+        // 字詞解釋
+        { f: "拜為<span class='highlight'>上卿</span>", b: "上卿：最高級的官職。", t: "字詞" },
+        { f: "使人<span class='highlight'>遺</span>趙王書", b: "遺：送給。", p: "粵音：[wai6] (位)", t: "字詞" },
+        { f: "願以十五城請<span class='highlight'>易</span>璧", b: "易：交換。", t: "字詞" },
+        { f: "徒見<span class='highlight'>欺</span>", b: "欺：欺騙 / 戲弄。", t: "字詞" },
+        { f: "竊計欲<span class='highlight'>亡</span>走燕", b: "亡：逃跑 / 逃亡。", t: "字詞" },
+        { f: "而君<span class='highlight'>幸</span>於趙王", b: "幸：得寵 / 寵幸。", t: "字詞" },
+        { f: "君不如<span class='highlight'>肉袒</span>伏斧質請罪", b: "肉袒：脫去上衣，露出身體（表示悔罪）。", t: "文化" },
+        { f: "均之二策，寧<span class='highlight'>許</span>以負秦曲", b: "許：答應 / 答允。", t: "字詞" },
+        { f: "秦王以十六字<span class='highlight'>傳</span>之美人", b: "傳：傳給 / 傳看。", t: "字詞" },
+        { f: "禮節甚<span class='highlight'>倨</span>", b: "倨：傲慢 / 無禮。", t: "字詞" },
+        { f: "璧有<span class='highlight'>瑕</span>，請指示王", b: "瑕：玉上的斑點。", t: "字詞" },
+        { f: "相如持其璧<span class='highlight'>睨</span>柱", b: "睨：斜視。", p: "粵音：[ngai6] (藝)", t: "字詞" },
+        { f: "秦王恐其<span class='highlight'>破</span>璧", b: "破：撞碎 / 毀壞。", t: "字詞" },
+        { f: "舍相如廣成<span class='highlight'>傳</span>", b: "傳：傳舍 / 驛館 / 賓館。", p: "粵音：[zyun6] (賺)", t: "字詞" },
+        { f: "<span class='highlight'>嚴</span>大國之威以修敬也", b: "嚴：尊重 / 敬畏。", t: "詞類活用" },
+        { f: "左右或欲<span class='highlight'>引</span>相如去", b: "引：拉 / 牽拉。", t: "字詞" },
+        { f: "請<span class='highlight'>奏</span>盆缻秦王", b: "奏：彈奏 / 敲擊。", t: "字詞" },
+        { f: "相如<span class='highlight'>顧</span>召趙御史", b: "顧：回頭。", t: "字詞" },
+        { f: "臣所以<span class='highlight'>去</span>親戚而事君者", b: "去：離開。", t: "一詞多義" },
+        { f: "因賓客至藺相如門<span class='highlight'>謝</span>罪", b: "謝：道歉 / 認錯。", t: "字詞" },
+
+        // 通假字
+        { f: "<span class='highlight'>可予不</span>", b: "不：通「否」，是否。", t: "通假字" },
+        { f: "召有司案圖", b: "案：通「按」，察看。", t: "通假字" },
+        { f: "設九賓禮於廷", b: "廷：通「庭」，朝廷。", t: "通假字" },
+        { f: "唯大王與群臣<span class='highlight'>孰</span>計議之", b: "孰：通「熟」，仔細。", t: "通假字" },
+
+        // 特殊句式
+        { f: "「徒見欺」屬於甚麼句式？", b: "句式：被動句（見：被）。", t: "句式" },
+        { f: "「而君幸於趙王」屬於甚麼句式？", b: "句式：被動句（於：被）。", t: "句式" },
+        { f: "「何以知之？」屬於甚麼特殊句式？", b: "句式：倒裝句 (賓語前置)。<br>原序：以何知之。", t: "句式" },
+        { f: "「求人可使報秦者」屬於甚麼特殊句式？", b: "句式：倒裝句 (定語後置)。", t: "句式" },
+
+        // 修辭
+        { f: "「秦王竟酒」中的「竟酒」運用了甚麼修辭？", b: "手法：借代（指宴會結束）。", t: "修辭" },
+        { f: "「不知將軍寬之至此也」<br>廉頗這句話表現出他甚麼性格？", b: "性格：勇於改過 / 坦率直爽。", t: "人物性格" }
     ]
 },
             xiaoyaoyou: {

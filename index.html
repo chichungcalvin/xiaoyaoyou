@@ -1,318 +1,13 @@
-<html lang="zh-Hant">
-<head>
-<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>指定篇章字詞/句式溫習卡</title>
-    <style>
-        :root { 
-            --primary: #2c3e50; --secondary: #3498db; --success: #27ae60; --error: #e74c3c; --bg: #f2f4f7; 
-        }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif; background: var(--bg); 
-            display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px 15px;
-            overscroll-behavior-y: contain;
-        }
-
-        /* 首頁目錄樣式 */
-        #menu-page { width: 100%; max-width: 600px; text-align: center; display: block; }
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-        .menu-btn { 
-            background: white; border: 2px solid #ddd; padding: 20px 10px; border-radius: 15px;
-            font-size: 1rem; font-weight: bold; color: var(--primary); cursor: pointer;
-            transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            touch-action: manipulation;
-        }
-        .menu-btn:active { transform: scale(0.95); background: var(--secondary); color: white; }
-        .menu-btn.disabled { opacity: 0.5; background: #eee; cursor: not-allowed; color: #999; }
-
-        /* 溫習介面與總結樣式 */
-        #game-ui, #summary { display: none; width: 100%; max-width: 500px; flex-direction: column; align-items: center; }
-        
-        .header-info { width: 100%; display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: var(--primary); }
-        .progress-container { width: 100%; height: 12px; background: #e0e0e0; border-radius: 6px; margin-bottom: 20px; overflow: hidden; }
-        #progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #2ecc71, #27ae60); transition: width 0.4s; }
-
-        .card-container { perspective: 1000px; width: 100%; height: 350px; position: relative; cursor: pointer; }
-        .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); box-shadow: 0 15px 35px rgba(0,0,0,0.15); border-radius: 20px; }
-        .card.is-flipped { transform: rotateY(180deg); }
-        
-        .card-face { 
-            position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            padding: 30px; border-radius: 20px; text-align: center; border: 1px solid #ddd; 
-        }
-        .card-front { background: white; }
-        .card-back { background: var(--secondary); color: white; transform: rotateY(180deg); }
-        
-        .tag { position: absolute; top: 15px; left: 20px; font-size: 0.8rem; padding: 4px 12px; border-radius: 15px; background: #f8f9fa; color: #7f8c8d; border: 1px solid #eee; }
-        .highlight { color: var(--error); font-weight: bold; text-decoration: underline; }
-        .phonetic { display: block; margin-top: 15px; font-size: 0.95rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.4); padding-top: 10px; width: 85%; }
-
-        .controls { margin-top: 30px; display: flex; gap: 15px; width: 100%; }
-        button { 
-            flex: 1; padding: 18px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; 
-            cursor: pointer; touch-action: manipulation; user-select: none; transition: 0.2s;
-        }
-        .btn-correct { background: var(--success); color: white; }
-        .btn-wrong { background: var(--error); color: white; }
-        .btn-back { background: var(--primary); color: white; margin-top: 25px; width: 100%; }
-
-        .summary-box { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; }
-        .wrong-list { margin-top: 20px; text-align: left; max-height: 350px; overflow-y: auto; background: #fffcfc; border: 1px solid #ffebeb; border-radius: 12px; padding: 15px; }
-        .wrong-item { margin-bottom: 15px; border-bottom: 1px dashed #ffcccc; padding-bottom: 10px; }
-
-        @media (max-width: 400px) { h1 { font-size: 1.4rem; } }
-    </style>
-    <title>中文範文詞解練習</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-    <div id="menu-page">
-        <h1>〈指定篇章字詞/句式〉<br>溫習卡目錄</h1>
-        <div class="menu-grid">
-            <button class="menu-btn" onclick="startStudy('shisanshou')">詩三首</button>
-            <button class="menu-btn" onclick="startStudy('cisanshou')">詞三首</button>
-            <button class="menu-btn" onclick="startStudy('yueyanglou')">岳陽樓記</button>
-            <button class="menu-btn" onclick="startStudy('quanxue')">勸學(節錄)</button>
-            <button class="menu-btn" onclick="startStudy('shishuo')">師說</button>
-            <button class="menu-btn" onclick="startStudy('lianpo')">廉頗藺相如列傳</button>
-            <button class="menu-btn" onclick="startStudy('lunyu')">論仁論孝論君子</button>
-            <button class="menu-btn disabled">魚我所欲也</button>
-            <button class="menu-btn disabled">出師表</button>
-            <button class="menu-btn disabled">六國論</button>
-            <button class="menu-btn" onclick="startStudy('xiaoyaoyou')">逍遙遊(節錄)</button>
-            <button class="menu-btn disabled">始得西山宴遊記</button>
-        </div>
-    </div>
-
-    <div id="game-ui">
-        <h2 id="current-title" style="color: var(--primary); margin: 0 0 15px 0;"></h2>
-        <div class="header-info">
-            <span id="timer">⏳ 00:00</span>
-            <span id="counter">1 / --</span>
-        </div>
-        <div class="progress-container"><div id="progress-bar"></div></div>
-
-        <div class="card-container" onclick="flipCard()">
-            <div class="card" id="card">
-                <div class="card-face card-front">
-                    <span class="tag" id="tag">注釋</span>
-                    <div id="frontText" style="font-size: 1.4rem; line-height: 1.6;"></div>
-                </div>
-                <div class="card-face card-back">
-                    <div id="backText" style="font-size: 1.2rem; line-height: 1.6;"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <button class="btn-wrong" onclick="markAnswer(false)">❌ 答錯了</button>
-            <button class="btn-correct" onclick="markAnswer(true)">✅ 我會了</button>
-    <div class="container">
-        <h1>範文詞解全量練習</h1>
-        
-        <div id="menu">
-            <button onclick="startQuiz('shisanshou')">詩三首 (全量)</button>
-            <button onclick="startQuiz('cisanshou')">詞三首 (全量)</button>
-            <button disabled>岳陽樓記 (整理中)</button>
-</div>
-    </div>
-
-    <div id="summary">
-        <div class="summary-box">
-            <h2 style="text-align: center; margin-top: 0;">🎉 溫習完成！</h2>
-            <p id="stats-time" style="text-align: center; font-size: 1.1rem; color: #666;"></p>
-            <div style="display: flex; justify-content: space-around; margin: 20px 0;">
-                <div style="text-align: center;"><div style="color: var(--success); font-size: 2rem; font-weight: bold;" id="correct-count">0</div><div>答對</div></div>
-                <div style="text-align: center;"><div style="color: var(--error); font-size: 2rem; font-weight: bold;" id="wrong-count">0</div><div>答錯</div></div>
-        <div id="quiz-container" style="display:none;">
-            <h2 id="quiz-title"></h2>
-            <div id="question-box">
-                <p id="question-text"></p>
-                <p id="pronunciation" style="color: #666; font-size: 0.9em;"></p>
-</div>
-
-            <div id="wrong-review-section">
-                <h3 style="color: var(--error); border-left: 4px solid var(--error); padding-left: 10px; margin-bottom: 10px;">需重點複習：</h3>
-                <div class="wrong-list" id="wrong-list"></div>
-            <div id="answer-box" style="display:none;">
-                <hr>
-                <p><strong>答案：</strong> <span id="answer-text"></span></p>
-            </div>
-
-            <div class="controls">
-                <button id="show-btn" onclick="showAnswer()">顯示答案</button>
-                <button id="next-btn" onclick="nextQuestion()" style="display:none;">下一題</button>
-                <button onclick="backToMenu()">返回選單</button>
-</div>
-            
-            <button class="btn-back" onclick="location.reload()">返回目錄</button>
-</div>
-</div>
-
-    <script>
-        const allData = {
-            shisanshou: {
-    title: "詩三首 (山居、月下、登樓)",
-    data: [
-        // 山居秋暝
-        { f: "天氣<span class='highlight'>晚</span>來秋", b: "晚：黃昏 / 傍晚。", t: "山居秋暝" },
-        { f: "竹<span class='highlight'>喧</span>歸浣女", b: "喧：喧鬧聲 / 嘈雜聲。", t: "山居秋暝" },
-        { f: "竹喧歸<span class='highlight'>浣女</span>", b: "浣女：洗衣女。", t: "山居秋暝" },
-        { f: "隨意春芳<span class='highlight'>歇</span>", b: "歇：凋謝 / 停止 / 消失。", t: "山居秋暝" },
-        { f: "<span class='highlight'>王孫</span>自可留", b: "王孫：原指貴族子弟，此處詩人自指。", t: "山居秋暝" },
-        { f: "「明月松間照，清泉石上流」<br>運用了甚麼手法？", b: "手法：以動襯靜。", t: "山居秋暝 (修辭)" },
-
-        // 月下獨酌
-        { f: "花間一壺酒，獨<span class='highlight'>酌</span>無相親", b: "酌：飲酒。", t: "月下獨酌" },
-        { f: "暫伴月<span class='highlight'>將</span>影", b: "將：和 / 共 / 與。", t: "月下獨酌" },
-        { f: "行樂須<span class='highlight'>及</span>春", b: "及：趁著 / 乘 / 趕及。", t: "月下獨酌" },
-        { f: "我舞影<span class='highlight'>零亂</span>", b: "零亂：散亂 / 搖擺。" , t: "月下獨酌" },
-        { f: "<span class='highlight'>永結無情遊</span>的「無情」", b: "無情：超脫塵世感情 / 忘卻世俗得失。", t: "月下獨酌" },
-        { f: "相期<span class='highlight'>邈雲漢</span>", b: "邈：遙遠。<br>雲漢：銀河。", t: "月下獨酌" },
-        { f: "「舉杯邀明月，對影成三人」<br>中的「三人」是指？", b: "答案：明月、身影、詩人自己。", t: "月下獨酌" },
-
-        // 登樓
-        { f: "萬方多難此<span class='highlight'>登臨</span>", b: "登臨：登上高處 (此指西山)。", t: "登樓" },
-        { f: "<span class='highlight'>北極</span>朝廷終不改", b: "北極：北極星。比喻唐朝朝廷。", t: "登樓" },
-        { f: "<span class='highlight'>西山寇盜</span>莫相侵", b: "西山寇盜：指當時入寇的吐蕃。", t: "登樓" },
-        { f: "可憐<span class='highlight'>後主</span>還祠廟", b: "後主：蜀漢劉禪。暗喻代宗昏庸。", t: "登樓" },
-        { f: "<span class='highlight'>日暮</span>聊為梁甫吟", b: "日暮：黃昏。暗喻晚年及時局艱難。", t: "登樓" },
-        { f: "<span class='highlight'>聊</span>為梁甫吟", b: "聊：姑且 / 暫且。", t: "登樓" },
-        { f: "「錦江春色來天地，玉壘浮雲變古今」<br>運用了甚麼修辭？", b: "修辭：對偶、誇張 (時間與空間)。", t: "登樓 (修辭)" }
-    ]
+]
 },
-            cisanshou: {
-    title: "詞三首 (赤壁懷古、聲聲慢、元夕)",
-    data: [
-        // 念奴嬌·赤壁懷古
-        { f: "大江東去，浪<span class='highlight'>淘</span>盡", b: "淘：沖洗 / 沖刷。", t: "念奴嬌" },
-        { f: "<span class='highlight'>故壘</span>西邊", b: "故壘：舊時的營壘 / 營盤。", t: "念奴嬌" },
-        { f: "羽扇<span class='highlight'>綸巾</span>", b: "綸巾：青絲製成的頭巾（名士裝束）。", p: "粵音：[gwan1] (關)", t: "念奴嬌" },
-        { f: "<span class='highlight'>檣櫓</span>灰飛煙滅", b: "檣櫓：檣是桅杆，櫓是船槳。此處指代曹操的水軍戰船。", t: "念奴嬌" },
-        { f: "多情應笑我，早生<span class='highlight'>華髮</span>", b: "華髮：花白的頭髮。", p: "粵音：[faa1] (花)", t: "念奴嬌" },
-        { f: "一尊還<span class='highlight'>酹</span>江月", b: "酹：把酒灑在地上，表示祭奠或澆奠。", p: "粵音：[leoi6] (類)", t: "念奴嬌" },
-        { f: "「亂石穿空，驚濤拍岸，捲起千堆雪」<br>運用了甚麼修辭手法？", b: "手法：對偶、比喻（以雪喻浪）、誇張。", t: "念奴嬌 (修辭)" },
-
-        // 聲聲慢·秋情
-        { f: "乍暖還寒時候，最難<span class='highlight'>將息</span>", b: "將息：調養 / 休息 / 養生。", t: "聲聲慢" },
-        { f: "怎<span class='highlight'>敵</span>他晚來風急", b: "敵：抵擋 / 對抗。", t: "聲聲慢" },
-        { f: "滿地黃花<span class='highlight'>堆積</span>", b: "堆積：形容菊花開得極盛，繁密地鋪在地上（亦有凋零之說）。", t: "聲聲慢" },
-        { f: "如今有誰<span class='highlight'>堪</span>摘", b: "堪：能夠 / 可以。", t: "聲聲慢" },
-        { f: "這<span class='highlight'>次第</span>，怎一個愁字了得", b: "次第：情形 / 光景 / 狀況。", t: "聲聲慢" },
-        { f: "《聲聲慢》開首運用了哪七組疊字？", b: "答案：尋尋覓覓，冷冷清清，悽悽慘慘戚戚。", t: "聲聲慢 (名句)" },
-
-        // 青玉案·元夕
-        { f: "東風夜放花千樹，更吹落、<span class='highlight'>星如雨</span>", b: "星如雨：形容煙花紛落如雨。", t: "青玉案" },
-        { f: "鳳簫聲動，<span class='highlight'>玉壺</span>光轉", b: "玉壺：比喻皎潔的月亮。", t: "青玉案" },
-        { f: "一夜<span class='highlight'>魚龍</span>舞", b: "魚龍：魚燈、龍燈等花燈。", t: "青玉案" },
-        { f: "<span class='highlight'>蛾兒雪柳</span>黃金縷", b: "蛾兒、雪柳：元宵節婦女佩戴的華麗頭飾。", t: "青玉案" },
-        { f: "笑語盈盈<span class='highlight'>暗香</span>去", b: "暗香：指女子身上的香氣。", t: "青玉案" },
-        { f: "眾裏尋他千<span class='highlight'>百度</span>", b: "度：次 / 回。", t: "青玉案" },
-        { f: "<span class='highlight'>驀然</span>迴首", b: "驀然：突然 / 猛然。", p: "粵音：[mak6] (墨)", t: "青玉案" },
-        { f: "那人卻在，燈火<span class='highlight'>闌珊</span>處", b: "闌珊：零落 / 稀疏 / 將盡。", t: "青玉案" }
-    ]
-},
-            yueyanglou: {
-    title: "岳陽樓記",
-    data: [
-        { f: "滕子京<span class='highlight'>謫</span>守巴陵郡", b: "謫：官員被降職、貶官。", t: "注釋 1" },
-        { f: "<span class='highlight'>越</span>明年", b: "越：及 / 過了 / 到。", t: "注釋 2" },
-        { f: "百廢<span class='highlight'>具</span>興", b: "具：通「俱」，全 / 皆 / 通通。", t: "注釋 3" },
-        { f: "<span class='highlight'>屬</span>予作文以記之", b: "屬：通「囑」，囑咐 / 託付。", p: "粵音：[zuk1] (囑)", t: "注釋 4" },
-        { f: "予觀夫巴陵<span class='highlight'>勝狀</span>", b: "勝狀：美景 / 勝景。", t: "注釋 5" },
-        { f: "<span class='highlight'>銜</span>遠山，吞長江", b: "銜：含著 / 連接。", t: "注釋 7" },
-        { f: "浩浩<span class='highlight'>湯湯</span>", b: "湯湯：水勢浩大。", p: "粵音：[soeng1] (商)", t: "注釋 8" },
-        { f: "橫無<span class='highlight'>際涯</span>", b: "際涯：邊際 / 邊緣。", t: "注釋 9" },
-        { f: "前人之述<span class='highlight'>備</span>矣", b: "備：詳盡 / 完備。", t: "注釋 11" },
-        { f: "<span class='highlight'>遷客騷人</span>", b: "遷客：被貶官的人。<br>騷人：失意的詩人 / 文人。", t: "注釋 12" },
-        { f: "連月不<span class='highlight'>開</span>", b: "開：放晴 / 打開 / 散開。", t: "注釋 14" },
-        { f: "濁浪<span class='highlight'>排</span>空", b: "排：推向 / 衝向。", t: "注釋 15" },
-        { f: "日星<span class='highlight'>隱耀</span>", b: "隱耀：隱沒光輝。", t: "注釋 16" },
-        { f: "檣<span class='highlight'>傾</span>楫摧", b: "傾：傾覆 / 倒下。", t: "注釋 18" },
-        { f: "檣傾<span class='highlight'>楫</span>摧", b: "楫：船槳。", p: "粵音：[zip3] (接)", t: "注釋 18" },
-        { f: "<span class='highlight'>薄暮</span>冥冥", b: "薄：迫近。<br>薄暮：傍晚 / 黃昏。", t: "注釋 19" },
-        { f: "去國懷鄉，憂<span class='highlight'>讒</span>畏譏", b: "讒：別人的誹謗 / 壞話。", t: "注釋 22" },
-        { f: "春和<span class='highlight'>景</span>明", b: "景：陽光 / 日光。", t: "注釋 23" },
-        { f: "波瀾不<span class='highlight'>驚</span>", b: "驚：起 / 湧起。", t: "注釋 24" },
-        { f: "一<span class='highlight'>碧</span>萬頃", b: "碧：青綠色的色塊。", t: "注釋 25" },
-        { f: "沙鷗翔<span class='highlight'>集</span>", b: "集：鳥類停息 / 聚集。", t: "注釋 27" },
-        { f: "錦<span class='highlight'>鱗</span>游泳", b: "鱗：代指魚類（借代手法）。", t: "注釋 28" },
-        { f: "岸芷汀蘭，<span class='highlight'>郁郁</span>青青", b: "郁郁：形容香氣濃郁。", t: "注釋 31" },
-        { f: "而或長煙<span class='highlight'>一</span>空", b: "一：全 / 完全。", t: "注釋 33" },
-        { f: "浮光躍金，靜影沉<span class='highlight'>璧</span>", b: "璧：圓形的白玉。", t: "注釋 35" },
-        { f: "把酒<span class='highlight'>臨</span>風", b: "臨：迎著 / 面對。", t: "注釋 37" },
-        { f: "寵辱皆<span class='highlight'>忘</span>", b: "忘：不放在心上。", t: "注釋 38" },
-        { f: "此樂何<span class='highlight'>極</span>", b: "極：窮盡 / 極點。", t: "注釋 39" },
-        { f: "<span class='highlight'>微</span>斯人，吾誰與歸", b: "微：如果沒有 / 非。", t: "注釋 45" },
-    ]
-},
-            quanxue: {
-    title: "勸學(節錄)",
-    data: [
-        { f: "學不可以<span class='highlight'>已</span>", b: "已：停止 / 廢棄。", t: "字詞" },
-        { f: "取之於<span class='highlight'>藍</span>", b: "藍：蓼藍（一種染料植物）。", t: "字詞" },
-        { f: "木直<span class='highlight'>中</span>繩", b: "中：合乎 / 符合。", p: "粵音：[zung3] (眾)", t: "字詞" },
-        { f: "<span class='highlight'>輮</span>以為輪", b: "輮：通「煣」，用火烘烤木材使之彎曲。", p: "粵音：[jau4] (柔)", t: "通假字" },
-        { f: "其曲中<span class='highlight'>規</span>", b: "規：圓規 / 畫圓的工具。", t: "字詞" },
-        { f: "雖有<span class='highlight'>槁暴</span>", b: "槁：枯乾。<br>暴：通「曝」，曬。", p: "暴粵音：[buk6] (瀑)", t: "通假字" },
-        { f: "不復<span class='highlight'>挺</span>者", b: "挺：直。", t: "字詞" },
-        { f: "金就<span class='highlight'>礪</span>則利", b: "礪：磨刀石。", t: "字詞" },
-        { f: "君子博學而日<span class='highlight'>參省</span>乎己", b: "參：多次 / 三次。<br>省：檢查 / 反省。", t: "字詞" },
-        { f: "則<span class='highlight'>知</span>明而行無過矣", b: "知：通「智」，智慧。", p: "粵音：[zi3] (智)", t: "通假字" },
-        { f: "吾嘗<span class='highlight'>跂</span>而望矣", b: "跂：提起腳跟 / 踮起腳。", p: "粵音：[kei4] (企)", t: "字詞" },
-        { f: "不如<span class='highlight'>須臾</span>之所學也", b: "須臾：片刻 / 極短的時間。", t: "字詞" },
-        { f: "而聞者<span class='highlight'>彰</span>", b: "彰：清楚 / 明顯。", t: "字詞" },
-        { f: "<span class='highlight'>假</span>輿馬者", b: "假：憑藉 / 借助 / 利用。", t: "字詞" },
-        { f: "而<span class='highlight'>致</span>千里", b: "致：達到 / 到達。", t: "字詞" },
-        { f: "而<span class='highlight'>絕</span>江河", b: "絕：橫渡。", t: "字詞" },
-        { f: "君子<span class='highlight'>生</span>非異也", b: "生：通「性」，資質 / 天性。", p: "粵音：[sing3] (性)", t: "通假字" },
-        { f: "積水成<span class='highlight'>淵</span>", b: "淵：深潭 / 深水。", t: "字詞" },
-        { f: "聖心<span class='highlight'>備</span>焉", b: "備：具備 / 完備。", t: "字詞" },
-        { f: "不積<span class='highlight'>跬步</span>", b: "跬步：古代的一步（半步為跬，一步為步）。", p: "跬粵音：[kwai2] (軌)", t: "字詞" },
-        { f: "<span class='highlight'>騏驥</span>一躍", b: "騏驥：駿馬 / 千里馬。", t: "字詞" },
-        { f: "<span class='highlight'>駑馬</span>十駕", b: "駑馬：劣馬。", t: "字詞" },
-        { f: "駑馬<span class='highlight'>十駕</span>", b: "十駕：馬拉車走十天（形容努力不懈）。", t: "字詞" },
-        { f: "<span class='highlight'>鍥</span>而不捨", b: "鍥：雕刻。", p: "粵音：[kit3] (潔)", t: "字詞" },
-        { f: "用心<span class='highlight'>一</span>也", b: "一：專一。", t: "字詞" },
-        { f: "「蚓無爪牙之利，筋骨之強」<br>屬於甚麼特殊句式？", b: "句式：倒裝句 (定語後置)。<br>原序：利之爪牙，強之筋骨。", t: "句式" }
-    ]
-},
-            
-    shishuo: {
-    title: "師說",
-    data: [
-        { f: "師者，所以<span class='highlight'>傳道</span>受業解惑也", b: "傳道：傳授儒家之道 / 道理。", t: "字詞" },
-        { f: "師者，所以<span class='highlight'>受業</span>解惑也", b: "受：通「授」，講授。<br>業：學業 / 經書專業。", t: "通假字/字詞" },
-        { f: "人非生而知之者，<span class='highlight'>孰</span>能無惑", b: "孰：誰 / 哪一個。", t: "字詞" },
-        { f: "其<span class='highlight'>聞道</span>也固先乎吾", b: "聞道：領悟、明白道理。", t: "字詞" },
-        { f: "吾從而<span class='highlight'>師</span>之", b: "師：以……為師（意動用法）。", t: "詞類活用" },
-        { f: "夫<span class='highlight'>庸</span>知其年之先後生於吾乎", b: "庸：難道 / 哪裡 / 豈。", t: "字詞" },
-        { f: "其<span class='highlight'>出</span>人也遠矣", b: "出：超出 / 超越。", t: "字詞" },
-        { f: "猶且從師而<span class='highlight'>問</span>焉", b: "問：請教 / 學習。", t: "字詞" },
-        { f: "聖人之所以為<span class='highlight'>聖</span>", b: "聖：聖人 / 聰明才智。", t: "字詞" },
-        { f: "於其身也則<span class='highlight'>恥</span>師焉", b: "恥：以……為恥（意動用法）。", t: "詞類活用" },
-        { f: "授之書而習其<span class='highlight'>句讀</span>者", b: "句讀：書面語句間暫停休息的地方（斷句）。", p: "讀粵音：[dau6] (逗)", t: "字詞" },
-        { f: "小學而大<span class='highlight'>遺</span>", b: "遺：遺漏 / 棄掉 / 忽略。", t: "字詞" },
-        { f: "官盛則近<span class='highlight'>諛</span>", b: "諛：諂媚 / 奉承。", t: "字詞" },
-        { f: "君子不<span class='highlight'>齒</span>", b: "齒：並列 / 提及（此指看不起）。", t: "字詞" },
-        { f: "聖人無<span class='highlight'>常</span>師", b: "常：固定。", t: "字詞" },
-        { f: "術業有專<span class='highlight'>攻</span>", b: "攻：學習 / 研究。", t: "字詞" },
-        { f: "六藝經傳皆<span class='highlight'>通</span>習之", b: "通：全部 / 全面。", t: "字詞" },
-        { f: "余<span class='highlight'>嘉</span>其能行古道", b: "嘉：讚許 / 讚賞。", t: "字詞" },
-        { f: "作師說以<span class='highlight'>貽</span>之", b: "貽：贈送。", p: "粵音：[ji4] (移)", t: "字詞" },
-        { f: "「聖益聖，愚益愚」<br>運用了甚麼修辭？", b: "手法：對比、頂真。", t: "修辭" },
-        { f: "「巫、醫、樂師、百工之人」<br>運用了甚麼修辭？", b: "手法：排比。", t: "修辭" },
-        { f: "「句讀之不知，惑之不解」<br>屬於甚麼特殊句式？", b: "句式：倒裝句 (賓語前置)。<br>原序：不知句讀，不解惑。", t: "句式" }
-    ]
-},
-            lianpo: {
+lianpo: {
+    title: "廉頗藺相如列傳",
     lianpo: {
     title: "廉頗藺相如列傳（全量版）",
-    data: [
+data: [
+        // 字詞解釋
+        { f: "拜為<span class='highlight'>上卿</span>", b: "上卿：最高級的官職。", t: "字詞" },
+        { f: "使人<span class='highlight'>遺</span>趙王書", b: "遺：送給。", p: "粵音：[wai6] (位)", t: "字詞" },
         // --- 完璧歸趙 ---
         { f: "廉頗<span class='highlight'>為</span>趙將", b: "為：做 / 擔任。", t: "字詞" },
         { f: "<span class='highlight'>伐</span>齊", b: "伐：攻打。", t: "字詞" },
@@ -321,7 +16,28 @@
         { f: "為趙<span class='highlight'>宦者令</span>繆賢舍人", b: "宦者令：宦官的首領。", t: "字詞" },
         { f: "為趙宦者令繆賢<span class='highlight'>舍人</span>", b: "舍人：門客 / 食客。", t: "字詞" },
         { f: "使人<span class='highlight'>遺</span>趙王書", b: "遺：送給。", p: "粵音：位", t: "字詞" },
-        { f: "願以十五城請<span class='highlight'>易</span>璧", b: "易：交換。", t: "字詞" },
+{ f: "願以十五城請<span class='highlight'>易</span>璧", b: "易：交換。", t: "字詞" },
+        { f: "徒見<span class='highlight'>欺</span>", b: "欺：欺騙 / 戲弄。", t: "字詞" },
+        { f: "竊計欲<span class='highlight'>亡</span>走燕", b: "亡：逃跑 / 逃亡。", t: "字詞" },
+        { f: "而君<span class='highlight'>幸</span>於趙王", b: "幸：得寵 / 寵幸。", t: "字詞" },
+        { f: "君不如<span class='highlight'>肉袒</span>伏斧質請罪", b: "肉袒：脫去上衣，露出身體（表示悔罪）。", t: "文化" },
+        { f: "均之二策，寧<span class='highlight'>許</span>以負秦曲", b: "許：答應 / 答允。", t: "字詞" },
+        { f: "秦王以十六字<span class='highlight'>傳</span>之美人", b: "傳：傳給 / 傳看。", t: "字詞" },
+        { f: "禮節甚<span class='highlight'>倨</span>", b: "倨：傲慢 / 無禮。", t: "字詞" },
+        { f: "璧有<span class='highlight'>瑕</span>，請指示王", b: "瑕：玉上的斑點。", t: "字詞" },
+        { f: "相如持其璧<span class='highlight'>睨</span>柱", b: "睨：斜視。", p: "粵音：[ngai6] (藝)", t: "字詞" },
+        { f: "秦王恐其<span class='highlight'>破</span>璧", b: "破：撞碎 / 毀壞。", t: "字詞" },
+        { f: "舍相如廣成<span class='highlight'>傳</span>", b: "傳：傳舍 / 驛館 / 賓館。", p: "粵音：[zyun6] (賺)", t: "字詞" },
+        { f: "<span class='highlight'>嚴</span>大國之威以修敬也", b: "嚴：尊重 / 敬畏。", t: "詞類活用" },
+        { f: "左右或欲<span class='highlight'>引</span>相如去", b: "引：拉 / 牽拉。", t: "字詞" },
+        { f: "請<span class='highlight'>奏</span>盆缻秦王", b: "奏：彈奏 / 敲擊。", t: "字詞" },
+        { f: "相如<span class='highlight'>顧</span>召趙御史", b: "顧：回頭。", t: "字詞" },
+        { f: "臣所以<span class='highlight'>去</span>親戚而事君者", b: "去：離開。", t: "一詞多義" },
+        { f: "因賓客至藺相如門<span class='highlight'>謝</span>罪", b: "謝：道歉 / 認錯。", t: "字詞" },
+
+        // 通假字
+        { f: "召有司案圖", b: "案：通「按」，察看。", t: "通假字" },
+        { f: "設九賓禮於廷", b: "廷：通「庭」，朝廷。", t: "通假字" },
         { f: "欲<span class='highlight'>予</span>秦", b: "予：給予。", t: "字詞" },
         { f: "徒<span class='highlight'>見</span>欺", b: "見：被。", t: "字詞" },
         { f: "即<span class='highlight'>患</span>秦兵之來", b: "患：擔心 / 憂慮。", t: "字詞" },
@@ -365,12 +81,17 @@
         { f: "<span class='highlight'>嚴</span>大國之威以<span class='highlight'>修</span>敬也", b: "嚴：尊重。<br>修：整治 / 備辦。", t: "字詞" },
         { f: "<span class='highlight'>布衣</span>之交", b: "布衣：平民百姓。", t: "字詞" },
         { f: "臣請<span class='highlight'>就湯鑊</span>", b: "就：接受。<br>湯鑊：烹煮酷刑。", t: "文化" },
-        { f: "唯大王與群臣<span class='highlight'>孰</span>計議之", b: "孰：通「熟」，仔細。", t: "通假字" },
+{ f: "唯大王與群臣<span class='highlight'>孰</span>計議之", b: "孰：通「熟」，仔細。", t: "通假字" },
         { f: "秦王<span class='highlight'>齋</span>五日", b: "齋：齋戒。", t: "字詞" },
         { f: "引趙使者<span class='highlight'>藺相如</span>", b: "引：延請 / 召喚。", t: "字詞" },
         { f: "<span class='highlight'>設九賓</span>於廷", b: "設九賓：最隆重的外交禮節。", t: "文化" },
         { f: "秦王竟<span class='highlight'>罷</span>", b: "罷：結束 / 遣散。", t: "字詞" },
 
+        // 特殊句式
+        { f: "「徒見欺」屬於甚麼句式？", b: "句式：被動句（見：被）。", t: "句式" },
+        { f: "「而君幸於趙王」屬於甚麼句式？", b: "句式：被動句（於：被）。", t: "句式" },
+        { f: "「何以知之？」屬於甚麼特殊句式？", b: "句式：倒裝句 (賓語前置)。<br>原序：以何知之。", t: "句式" },
+        { f: "「求人可使報秦者」屬於甚麼特殊句式？", b: "句式：倒裝句 (定語後置)。", t: "句式" },
         // --- 澠池之會 ---
         { f: "其後秦伐趙，<span class='highlight'>拔</span>石城", b: "拔：攻取 / 攻克。", t: "字詞" },
         { f: "趙王<span class='highlight'>畏</span>秦", b: "畏：害怕。", t: "字詞" },
@@ -415,176 +136,6 @@
         { f: "不知將軍<span class='highlight'>寬</span>之至此也", b: "寬：寬容 / 寬大。", t: "字詞" },
         { f: "<span class='highlight'>卒</span>相與歡", b: "卒：終於。", t: "字詞" },
         { f: "為<span class='highlight'>刎頸之交</span>", b: "刎頸之交：同生死共患難的朋友。", t: "成語" }
-    ]
+]
 },
-            lunyu: {
-    title: "論仁、論孝、論君子",
-    data: [
-        // 【論仁】
-        { f: "不可以久處<span class='highlight'>約</span>", b: "約：窮困 / 貧困的環境。", t: "字詞" },
-        { f: "<span class='highlight'>知</span>者利仁", b: "知：通「智」，聰明 / 有智慧的人。", p: "粵音：[zi3] (智)", t: "通假字" },
-        { f: "知者<span class='highlight'>利</span>仁", b: "利：利用 / 貪求仁德的好處。", t: "字詞" },
-        { f: "不以其<span class='highlight'>道</span>得之", b: "道：正確的方法 / 途徑。", t: "字詞" },
-        { f: "不以其道得之，不<span class='highlight'>處</span>也", b: "處：接受 / 享有。", t: "字詞" },
-        { f: "君子<span class='highlight'>去</span>仁，<span class='highlight'>惡乎</span>成名", b: "去：離棄 / 拋棄。<br>惡乎：何以 / 怎麼。", t: "字詞" },
-        { f: "無<span class='highlight'>終食之間</span>違仁", b: "終食之間：吃完一頓飯的時間（比喻極短時間）。", t: "字詞" },
-        { f: "<span class='highlight'>造次</span>必於是", b: "造次：匆忙 / 倉促。", t: "字詞" },
-        { f: "<span class='highlight'>顛沛</span>必於是", b: "顛沛：顛沛流離 / 困頓受挫。", t: "字詞" },
-        { f: "<span class='highlight'>克己復禮</span>為仁", b: "克己：克制私欲。<br>復禮：使言行合乎禮教。", t: "字詞" },
-        { f: "請其<span class='highlight'>目</span>", b: "目：綱目 / 要目 / 細則。", t: "字詞" },
-        { f: "回雖不<span class='highlight'>敏</span>", b: "敏：聰敏。", t: "字詞" },
-
-        // 【論孝】
-        { f: "今之孝者，是謂能<span class='highlight'>養</span>", b: "養：供養 / 養活。", p: "粵音：[joeng6] (樣)", t: "字詞" },
-        { f: "事父母<span class='highlight'>幾</span>諫", b: "幾：輕微 / 婉轉。", p: "粵音：[gei1] (機)", t: "字詞" },
-        { f: "又敬不<span class='highlight'>違</span>", b: "違：違抗 / 觸犯。", t: "字詞" },
-        { f: "<span class='highlight'>勞</span>而不怨", b: "勞：憂愁 / 擔憂。", t: "字詞" },
-        { f: "父母之年，不可不<span class='highlight'>知</span>也", b: "知：記住 / 紀念。", t: "字詞" },
-
-        // 【論君子】
-        { f: "君子不重則不<span class='highlight'>威</span>", b: "威：威嚴。", t: "字詞" },
-        { f: "學則不<span class='highlight'>固</span>", b: "固：鞏固（一說為固陋）。", t: "字詞" },
-        { f: "過則勿<span class='highlight'>憚</span>改", b: "憚：害怕 / 畏懼。", t: "字詞" },
-        { f: "君子<span class='highlight'>坦蕩蕩</span>", b: "坦蕩蕩：心胸舒坦寬廣。", t: "字詞" },
-        { f: "小人長<span class='highlight'>戚戚</span>", b: "戚戚：經常憂慮局促。", t: "字詞" },
-        { f: "君子<span class='highlight'>病</span>無能焉", b: "病：憂慮 / 慚愧。", t: "字詞" },
-        { f: "不病人之不<span class='highlight'>己知</span>也", b: "己知：了解自己（倒裝：知己）。", t: "句式" },
-        { f: "君子<span class='highlight'>義以為質</span>", b: "義以為質：以義作為處事原則。", t: "字詞" },
-        { f: "君子<span class='highlight'>恥</span>其言而過其行", b: "恥：以……為恥（意動用法）。", t: "詞類活用" },
-
-        // 修辭與對比
-        { f: "「君子坦蕩蕩，小人長戚戚」<br>運用了甚麼修辭？", b: "手法：對比、對偶。", t: "修辭" },
-        { f: "「非禮勿視，非禮勿聽，非禮勿言，非禮勿動」<br>運用了甚麼修辭？", b: "手法：排比。", t: "修辭" },
-    ]
-},
-            xiaoyaoyou: {
-                title: "逍遙遊(節錄)",
-                data: [
-                    { f: "魏王<span class='highlight'>貽</span>我大瓠之種", b: "貽：贈送 / 贈。", p: "粵音：[yi4] (兒)", t: "注釋 2" },
-                    { f: "魏王貽我大<span class='highlight'>瓠</span>之種", b: "瓠：葫蘆。", p: "粵音：[wu6] (護)", t: "注釋 2" },
-                    { f: "我<span class='highlight'>樹</span>之成而實五石", b: "樹：種植。", p: "", t: "注釋 3" },
-                    { f: "我樹之成而<span class='highlight'>實</span>五石", b: "實：果實 / 結出的果實。", p: "", t: "注釋 3" },
-                    { f: "我樹之成而實五<span class='highlight'>石</span>", b: "石：容量單位，十斗為一石。", p: "粵音：[daam3] (擔)", t: "注釋 3" },
-                    { f: "其<span class='highlight'>堅</span>不能自舉也", b: "堅：硬度 / 質地堅硬。", p: "", t: "注釋 4" },
-                    { f: "其堅不能自<span class='highlight'>舉</span>也", b: "舉：擎 / 舉起 / 支撐。", p: "", t: "注釋 4" },
-                    { f: "<span class='highlight'>剖</span>之以為瓢", b: "剖：破開 / 中分。", p: "粵音：[pau2] (瓿)", t: "注釋 5" },
-                    { f: "<span class='highlight'>瓠落</span>無所容", b: "瓠落：大而空廓的樣子。", p: "粵音：[wok6] (鑊)", t: "注釋 6" },
-                    { f: "非不<span class='highlight'>呺然</span>大也", b: "呺然：虛空而巨大的樣子。", p: "粵音：[hiu1] (僥)", t: "注釋 7" },
-                    { f: "吾為其無用而<span class='highlight'>掊</span>之", b: "掊：擊破。", p: "粵音：[pau2] (瓿)", t: "注釋 8" },
-                    { f: "夫子固<span class='highlight'>拙於</span>用大矣", b: "拙於：不善於。", p: "", t: "注釋 9" },
-                    { f: "有<span class='highlight'>善</span>為不龜手之藥者", b: "善：擅長。", p: "", t: "小測 9" },
-                    { f: "不<span class='highlight'>龜手</span>之藥", b: "龜手：皮膚受凍裂開。龜：通「皸」。", p: "粵音：[gwan1] (軍)", t: "注釋 10" },
-                    { f: "世世以<span class='highlight'>洴澼絖</span>為事", b: "洴澼：漂洗。<br>絖：棉絮。", p: "洴澼 [ping4 pik1] 絖 [kwong3]", t: "注釋 11" },
-                    { f: "聚族而<span class='highlight'>謀</span>", b: "謀：商量 / 謀劃。", p: "", t: "小測 11" },
-                    { f: "今一朝而<span class='highlight'>鬻</span>技百金", b: "鬻：賣 / 出售。", p: "粵音：[juk6] (育)", t: "注釋 12" },
-                    { f: "以<span class='highlight'>說</span>吳王", b: "說：遊說。", p: "粵音：[seoi3] (碎)", t: "注釋 13" },
-                    { f: "吳王使之<span class='highlight'>將</span>", b: "將：領兵 (動詞)。", p: "粵音：[zoeng3] (醬)", t: "注釋 15" },
-                    { f: "<span class='highlight'>或</span>以封", b: "或：有人。", p: "", t: "小測 14" },
-                    { f: "何不<span class='highlight'>慮</span>以為大樽", b: "慮：考慮 / 考慮繫著。", p: "", t: "注釋 18" },
-                    { f: "何不慮以為大<span class='highlight'>樽</span>", b: "樽：腰舟，助浮工具。", p: "", t: "注釋 18" },
-                    { f: "則夫子猶有<span class='highlight'>蓬</span>之心也夫", b: "蓬：卷曲不直的草。喻心志閉塞。", p: "粵音：[pung4] (篷)", t: "注釋 19" },
-                    { f: "人謂之<span class='highlight'>樗</span>", b: "樗：落葉喬木，木材皮粗質劣。", p: "粵音：[syu1] (書)", t: "注釋 20" },
-                    { f: "其大本<span class='highlight'>擁腫</span>而不中繩墨", b: "擁腫：通「臃腫」，盤結不平。", p: "", t: "注釋 21" },
-                    { f: "不<span class='highlight'>中</span>繩墨", b: "中：符合 / 合乎。", p: "粵音：[zung3] (眾)", t: "注釋 21" },
-                    { f: "其小枝卷曲而不中<span class='highlight'>規矩</span>", b: "規：畫圓工具。矩：畫方工具。", p: "", t: "注釋 22" },
-                    { f: "立之<span class='highlight'>塗</span>", b: "塗：通「途」，道路。", p: "", t: "注釋 23" },
-                    { f: "眾所同<span class='highlight'>去</span>也", b: "去：離棄 / 拋棄。", p: "粵音：[heoi2] (許)", t: "注釋 24" },
-                    { f: "子獨不見<span class='highlight'>狸狌</span>乎", b: "狸：野貓。<br>狌：通「鼬」，黃鼠狼。", p: "狌音：[sang1] (生)", t: "注釋 25" },
-                    { f: "子<span class='highlight'>獨</span>不見狸狌乎", b: "獨：難道 / 豈。", p: "", t: "注釋 25" },
-                    { f: "以候<span class='highlight'>敖</span>者", b: "敖：通「遨」，閒遊。", p: "粵音：[ngou4] (熬)", t: "注釋 26" },
-                    { f: "東西<span class='highlight'>跳梁</span>", b: "跳梁：通「踉」，跳躍。", p: "", t: "注釋 27" },
-                    { f: "不<span class='highlight'>辟</span>高下", b: "辟：通「避」。", p: "", t: "注釋 27" },
-                    { f: "中於<span class='highlight'>機辟</span>，死於罔罟", b: "機辟：捕捉鳥獸的工具。", p: "", t: "注釋 28" },
-                    { f: "死於<span class='highlight'>罔罟</span>", b: "罔：通「網」。<br>罟：魚網。", p: "罟音：[gu2] (古)", t: "注釋 28" },
-                    { f: "今夫<span class='highlight'>犛</span>牛", b: "犛牛：即旄牛。", p: "粵音：[lei4] (離)", t: "注釋 29" },
-                    { f: "不能<span class='highlight'>執</span>鼠", b: "執：捕捉 / 捉。", p: "", t: "注釋 30" },
-                    { f: "廣<span class='highlight'>莫</span>之野", b: "莫：通「漠」，遼闊空曠。", p: "", t: "注釋 32" },
-                    { f: "<span class='highlight'>彷徨</span>乎無為其側", b: "彷徨：隨意徜徉。", p: "", t: "注釋 33" },
-                    { f: "彷徨乎無為其<span class='highlight'>側</span>", b: "側：旁邊。", p: "", t: "小測 27" },
-                    { f: "不<span class='highlight'>夭</span>斤斧", b: "夭：摧折 / 砍伐。", p: "", t: "注釋 34" },
-                    { f: "<span class='highlight'>安</span>所困苦哉", b: "安：何 / 哪裏。", p: "", t: "注釋 35" },
-                    { f: "安所<span class='highlight'>困苦</span>哉", b: "困苦：艱難 / 艱苦。", p: "", t: "注釋 35" }
-                ]
-            }
-        };
-
-        let currentSet = [];
-        let currentIndex = 0;
-        let correctAnswers = 0;
-        let wrongItems = [];
-        let startTime, timerInterval;
-
-        function startStudy(chapterId) {
-            const chapter = allData[chapterId];
-            if (!chapter) return;
-            
-            currentSet = chapter.data.slice().sort(() => Math.random() - 0.5);
-            document.getElementById('current-title').innerText = chapter.title;
-            document.getElementById('menu-page').style.display = 'none';
-            document.getElementById('game-ui').style.display = 'flex';
-            
-            currentIndex = 0;
-            correctAnswers = 0;
-            wrongItems = [];
-            startTime = new Date();
-            timerInterval = setInterval(updateTimer, 1000);
-            showCard();
-        }
-
-        function updateTimer() {
-            const diff = Math.floor((new Date() - startTime) / 1000);
-            const m = Math.floor(diff / 60).toString().padStart(2, '0');
-            const s = (diff % 60).toString().padStart(2, '0');
-            document.getElementById('timer').innerText = `⏳ ${m}:${s}`;
-        }
-
-        function showCard() {
-            document.getElementById('card').classList.remove('is-flipped');
-            const item = currentSet[currentIndex];
-            document.getElementById('frontText').innerHTML = item.f;
-            document.getElementById('backText').innerHTML = item.b + (item.p ? `<span class="phonetic">${item.p}</span>` : "");
-            document.getElementById('tag').innerText = item.t;
-            document.getElementById('counter').innerText = `${currentIndex + 1} / ${currentSet.length}`;
-            document.getElementById('progress-bar').style.width = `${(currentIndex / currentSet.length) * 100}%`;
-        }
-
-        function flipCard() { document.getElementById('card').classList.toggle('is-flipped'); }
-
-        function markAnswer(isCorrect) {
-            if (isCorrect) correctAnswers++;
-            else wrongItems.push(currentSet[currentIndex]);
-
-            if (currentIndex < currentSet.length - 1) {
-                currentIndex++;
-                showCard();
-            } else {
-                showSummary();
-            }
-        }
-
-        function showSummary() {
-            clearInterval(timerInterval);
-            document.getElementById('game-ui').style.display = 'none';
-            document.getElementById('summary').style.display = 'flex';
-            document.getElementById('correct-count').innerText = correctAnswers;
-            document.getElementById('wrong-count').innerText = wrongItems.length;
-            document.getElementById('stats-time').innerText = `總用時：${document.getElementById('timer').innerText.replace('⏳ ', '')}`;
-            
-            const listEl = document.getElementById('wrong-list');
-            if (wrongItems.length === 0) {
-                document.getElementById('wrong-review-section').style.display = 'none';
-                listEl.innerHTML = "<p style='text-align:center;'>完美掌握！🎉</p>";
-            } else {
-                listEl.innerHTML = wrongItems.map(item => `
-                    <div class="wrong-item">
-                        <div style="font-weight:bold; color:var(--primary);">${item.f}</div>
-                        <div style="color:var(--secondary); margin-top:5px;">${item.b} ${item.p}</div>
-                    </div>
-                `).join('');
-            }
-            window.scrollTo(0,0);
-        }
-    </script>
-    <script src="script.js"></script>
-</body>
-</html>
+lunyu: {

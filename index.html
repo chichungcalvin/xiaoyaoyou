@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>〈逍遙遊〉字詞溫習卡</title>
     <style>
         :root { 
@@ -13,7 +13,10 @@
             --bg: #f2f4f7; 
         }
         
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+        }
 
         body { 
             font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif; 
@@ -25,9 +28,11 @@
             margin: 0; 
             padding: 20px 15px;
             overflow-x: hidden;
+            /* 防止 iPhone 頁面反彈過度 */
+            overscroll-behavior-y: contain;
         }
 
-        h1 { color: var(--primary); font-size: 1.8rem; margin: 10px 0; text-align: center; }
+        h1 { color: var(--primary); font-size: 1.6rem; margin: 10px 0; text-align: center; }
 
         .header-info { 
             width: 100%; max-width: 500px; 
@@ -38,7 +43,7 @@
         .progress-container { 
             width: 100%; max-width: 500px; height: 12px; 
             background: #e0e0e0; border-radius: 6px; 
-            margin-bottom: 25px; overflow: hidden; 
+            margin-bottom: 20px; overflow: hidden; 
         }
         #progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #2ecc71, #27ae60); transition: width 0.4s ease; }
 
@@ -58,7 +63,7 @@
             position: absolute; width: 100%; height: 100%; 
             backface-visibility: hidden; display: flex; flex-direction: column; 
             justify-content: center; align-items: center; 
-            padding: 30px; border-radius: 20px; text-align: center; 
+            padding: 25px; border-radius: 20px; text-align: center; 
         }
 
         .card-front { background: white; border: 1px solid #ddd; }
@@ -66,23 +71,33 @@
         
         .tag { position: absolute; top: 15px; left: 20px; font-size: 0.8rem; padding: 4px 12px; border-radius: 15px; background: #f8f9fa; color: #7f8c8d; border: 1px solid #eee; }
         .highlight { color: var(--error); font-weight: bold; text-decoration: underline; }
-        .phonetic { display: block; margin-top: 15px; font-size: 1rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.4); padding-top: 10px; width: 80%; }
+        .phonetic { display: block; margin-top: 15px; font-size: 0.95rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.4); padding-top: 10px; width: 85%; }
 
-        .controls { margin-top: 35px; display: flex; gap: 15px; width: 100%; max-width: 500px; }
+        .controls { margin-top: 30px; display: flex; gap: 15px; width: 100%; max-width: 500px; }
+        
+        /* 修正：優化 iPhone 點擊體驗 */
         button { 
             flex: 1; padding: 16px; border: none; border-radius: 12px; 
             cursor: pointer; font-size: 1.1rem; font-weight: bold;
             transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            /* 關鍵：禁用雙擊放大，防止跳動 */
+            touch-action: manipulation; 
+            user-select: none;
         }
+        button:active { transform: scale(0.96); opacity: 0.9; }
+        
         .btn-correct { background: var(--success); color: white; }
         .btn-wrong { background: var(--error); color: white; }
         .btn-next { background: var(--primary); color: white; }
 
-        #summary { display: none; width: 100%; max-width: 550px; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        #summary { display: none; width: 100%; max-width: 550px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         .wrong-list { margin-top: 20px; text-align: left; max-height: 400px; overflow-y: auto; padding: 15px; background: #fffcfc; border: 1px solid #ffebeb; border-radius: 12px; }
         .wrong-item { margin-bottom: 20px; border-bottom: 1px dashed #ffcccc; padding-bottom: 10px; }
 
-        @media (max-width: 400px) { .card-container { height: 350px; } }
+        @media (max-width: 400px) { 
+            .card-container { height: 360px; } 
+            h1 { font-size: 1.4rem; }
+        }
     </style>
 </head>
 <body>
@@ -92,18 +107,19 @@
     <div id="game-ui" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="header-info">
             <span id="timer">⏳ 00:00</span>
-            <span id="counter">1 / --</span>
+            <span id="counter">載入中...</span>
         </div>
         <div class="progress-container"><div id="progress-bar"></div></div>
 
         <div class="card-container" onclick="flipCard()">
             <div class="card" id="card">
                 <div class="card-face card-front">
-                    <span class="tag" id="tag">載入中...</span>
-                    <div id="frontText" style="font-size: 1.5rem; line-height: 1.6;">數據準備中...</div>
+                    <span class="tag" id="tag">注釋</span>
+                    <div id="frontText" style="font-size: 1.4rem; line-height: 1.6;"></div>
+                    <div style="margin-top: 20px; font-size: 0.8rem; color: #999;">(點擊翻面查看答案)</div>
                 </div>
                 <div class="card-face card-back">
-                    <div id="backText" style="font-size: 1.3rem; line-height: 1.6;">正在翻轉...</div>
+                    <div id="backText" style="font-size: 1.2rem; line-height: 1.6;"></div>
                 </div>
             </div>
         </div>
@@ -122,10 +138,10 @@
             <div style="text-align: center;"><div style="color: var(--error); font-size: 2rem; font-weight: bold;" id="wrong-count">0</div><div>答錯</div></div>
         </div>
         <div id="wrong-review-section">
-            <h3 style="color: var(--error);">需重點複習：</h3>
+            <h3 style="color: var(--error); border-left: 4px solid var(--error); padding-left: 10px;">需重點複習：</h3>
             <div class="wrong-list" id="wrong-list"></div>
         </div>
-        <button class="btn-next" style="width: 100%; margin-top: 25px; padding: 18px;" onclick="location.reload()">重新開始</button>
+        <button class="btn-next" style="width: 100%; margin-top: 25px; padding: 18px;" onclick="location.reload()">重新開始練習</button>
     </div>
 
     <script>
@@ -183,7 +199,6 @@
         let startTime, timerInterval;
 
         function init() {
-            // 隨機排序
             studyData = rawData.slice().sort(() => Math.random() - 0.5);
             startTime = new Date();
             timerInterval = setInterval(updateTimer, 1000);
@@ -233,13 +248,13 @@
             const listEl = document.getElementById('wrong-list');
             if (wrongItems.length === 0) {
                 document.getElementById('wrong-review-section').style.display = 'none';
-                listEl.innerHTML = "<p style='text-align:center;'>完美！</p>";
+                listEl.innerHTML = "<p style='text-align:center;'>🎉 完美！你已掌握全部字詞！</p>";
             } else {
                 listEl.innerHTML = wrongItems.map(item => `
                     <div class="wrong-item">
                         <div style="font-weight:bold;">${item.f}</div>
-                        <div style="color:var(--secondary); background:#eef7ff; padding:8px; border-radius:6px; margin-top:5px;">
-                            ${item.b} <span style="font-size:0.85rem; color:#666;">${item.p}</span>
+                        <div style="color:var(--secondary); background:#f0f8ff; padding:10px; border-radius:8px; margin-top:5px; font-size:1.1rem;">
+                            ${item.b} <span style="font-size:0.9rem; color:#666;">${item.p}</span>
                         </div>
                     </div>
                 `).join('');
@@ -247,7 +262,6 @@
             window.scrollTo(0,0);
         }
 
-        // 強制執行初始化
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>

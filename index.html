@@ -74,7 +74,7 @@
         <div class="menu-grid">
             <button class="menu-btn" onclick="startStudy('shisanshou')">詩三首</button>
             <button class="menu-btn" onclick="startStudy('cisanshou')">詞三首</button>
-            <button class="menu-btn disabled">岳陽樓記</button>
+            <button class="menu-btn" onclick="startStudy('yueyanglou')">岳陽樓記</button>
             <button class="menu-btn disabled">勸學(節錄)</button>
             <button class="menu-btn disabled">師說</button>
             <button class="menu-btn disabled">廉頗藺相如列傳</button>
@@ -182,7 +182,6 @@
         { f: "如今有誰<span class='highlight'>堪</span>摘", b: "堪：能夠 / 可以。", t: "聲聲慢" },
         { f: "這<span class='highlight'>次第</span>，怎一個愁字了得", b: "次第：情形 / 光景 / 狀況。", t: "聲聲慢" },
         { f: "《聲聲慢》開首運用了哪七組疊字？", b: "答案：尋尋覓覓，冷冷清清，悽悽慘慘戚戚。", t: "聲聲慢 (名句)" },
-        { f: "「梧桐更兼細雨」在詞中起到甚麼作用？", b: "作用：以哀景襯哀情，增加淒涼氣氛。", t: "聲聲慢 (賞析)" },
 
         // 青玉案·元夕
         { f: "東風夜放花千樹，更吹落、<span class='highlight'>星如雨</span>", b: "星如雨：形容煙花紛落如雨。", t: "青玉案" },
@@ -193,6 +192,41 @@
         { f: "眾裏尋他千<span class='highlight'>百度</span>", b: "度：次 / 回。", t: "青玉案" },
         { f: "<span class='highlight'>驀然</span>迴首", b: "驀然：突然 / 猛然。", p: "粵音：[mak6] (墨)", t: "青玉案" },
         { f: "那人卻在，燈火<span class='highlight'>闌珊</span>處", b: "闌珊：零落 / 稀疏 / 將盡。", t: "青玉案" }
+    ]
+},
+            yueyanglou: {
+    title: "岳陽樓記",
+    data: [
+        { f: "滕子京<span class='highlight'>謫</span>守巴陵郡", b: "謫：官員被降職、貶官。", t: "注釋 1" },
+        { f: "<span class='highlight'>越</span>明年", b: "越：及 / 過了 / 到。", t: "注釋 2" },
+        { f: "百廢<span class='highlight'>具</span>興", b: "具：通「俱」，全 / 皆 / 通通。", t: "注釋 3" },
+        { f: "<span class='highlight'>屬</span>予作文以記之", b: "屬：通「囑」，囑咐 / 託付。", p: "粵音：[zuk1] (囑)", t: "注釋 4" },
+        { f: "予觀夫巴陵<span class='highlight'>勝狀</span>", b: "勝狀：美景 / 勝景。", t: "注釋 5" },
+        { f: "<span class='highlight'>銜</span>遠山，吞長江", b: "銜：含著 / 連接。", t: "注釋 7" },
+        { f: "浩浩<span class='highlight'>湯湯</span>", b: "湯湯：水勢浩大。", p: "粵音：[soeng1] (商)", t: "注釋 8" },
+        { f: "橫無<span class='highlight'>際涯</span>", b: "際涯：邊際 / 邊緣。", t: "注釋 9" },
+        { f: "前人之述<span class='highlight'>備</span>矣", b: "備：詳盡 / 完備。", t: "注釋 11" },
+        { f: "<span class='highlight'>遷客騷人</span>", b: "遷客：被貶官的人。<br>騷人：失意的詩人 / 文人。", t: "注釋 12" },
+        { f: "連月不<span class='highlight'>開</span>", b: "開：放晴 / 打開 / 散開。", t: "注釋 14" },
+        { f: "濁浪<span class='highlight'>排</span>空", b: "排：推向 / 衝向。", t: "注釋 15" },
+        { f: "日星<span class='highlight'>隱耀</span>", b: "隱耀：隱沒光輝。", t: "注釋 16" },
+        { f: "檣<span class='highlight'>傾</span>楫摧", b: "傾：傾覆 / 倒下。", t: "注釋 18" },
+        { f: "檣傾<span class='highlight'>楫</span>摧", b: "楫：船槳。", p: "粵音：[zip3] (接)", t: "注釋 18" },
+        { f: "<span class='highlight'>薄暮</span>冥冥", b: "薄：迫近。<br>薄暮：傍晚 / 黃昏。", t: "注釋 19" },
+        { f: "去國懷鄉，憂<span class='highlight'>讒</span>畏譏", b: "讒：別人的誹謗 / 壞話。", t: "注釋 22" },
+        { f: "春和<span class='highlight'>景</span>明", b: "景：陽光 / 日光。", t: "注釋 23" },
+        { f: "波瀾不<span class='highlight'>驚</span>", b: "驚：起 / 湧起。", t: "注釋 24" },
+        { f: "一<span class='highlight'>碧</span>萬頃", b: "碧：青綠色的色塊。", t: "注釋 25" },
+        { f: "沙鷗翔<span class='highlight'>集</span>", b: "集：鳥類停息 / 聚集。", t: "注釋 27" },
+        { f: "錦<span class='highlight'>鱗</span>游泳", b: "鱗：代指魚類（借代手法）。", t: "注釋 28" },
+        { f: "岸芷汀蘭，<span class='highlight'>郁郁</span>青青", b: "郁郁：形容香氣濃郁。", t: "注釋 31" },
+        { f: "而或長煙<span class='highlight'>一</span>空", b: "一：全 / 完全。", t: "注釋 33" },
+        { f: "浮光躍金，靜影沉<span class='highlight'>璧</span>", b: "璧：圓形的白玉。", t: "注釋 35" },
+        { f: "把酒<span class='highlight'>臨</span>風", b: "臨：迎著 / 面對。", t: "注釋 37" },
+        { f: "寵辱皆<span class='highlight'>忘</span>", b: "忘：不放在心上。", t: "注釋 38" },
+        { f: "此樂何<span class='highlight'>極</span>", b: "極：窮盡 / 極點。", t: "注釋 39" },
+        { f: "<span class='highlight'>微</span>斯人，吾誰與歸", b: "微：如果沒有 / 非。", t: "注釋 45" },
+        { f: "「先天下之憂而憂，後天下之樂而樂」反映了？", b: "答案：古仁人之心（遠大抱負與責任感）。", t: "名句賞析" }
     ]
 },
             xiaoyaoyou: {

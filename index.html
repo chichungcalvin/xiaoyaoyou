@@ -79,8 +79,8 @@ cursor: pointer; touch-action: manipulation; user-select: none; transition: 0.2s
 <button class="menu-btn" onclick="startStudy('shishuo')">師說</button>
 <button class="menu-btn" onclick="startStudy('lianpo')">廉頗藺相如列傳</button>
 <button class="menu-btn" onclick="startStudy('lunyu')">論仁論孝論君子</button>
-<button class="menu-btn disabled">魚我所欲也</button>
-<button class="menu-btn disabled">出師表</button>
+<button class="menu-btn" onclick="startStudy('yuwo')">魚我所欲也</button>
+<button class="menu-btn" onclick="startStudy('chushibiao')">出師表</button>
 <button class="menu-btn disabled">六國論</button>
 <button class="menu-btn" onclick="startStudy('xiaoyaoyou')">逍遙遊(節錄)</button>
 <button class="menu-btn disabled">始得西山宴遊記</button>
@@ -614,6 +614,85 @@ yuwo: {
         { f: "今為宮室之美為之，<span class='highlight'>為妻妾之奉為之</span>", b: "為（前）：為了。為（後）：做 / 接受。", t: "魚我所欲 also" },
         { f: "<span class='highlight'>是</span>亦不可以<span class='highlight'>已</span>乎", b: "是：這。已：停止 / 放棄。", t: "魚我所欲也" },
         { f: "此之謂失其<span class='highlight'>本心</span>", b: "本心：天性 / 固有的羞惡之心。", t: "魚我所欲也" }
+    ]
+},
+    
+    chushibiao: {
+    title: "出師表（全量覆蓋版）",
+    data: [
+        // --- 分析形勢與開張聖聽 ---
+        { f: "先帝創業未半，而中道<span class='highlight'>崩殂</span>", b: "崩殂：死亡（專指皇帝去世）。", t: "出師表" },
+        { f: "今天下三分，益州<span class='highlight'>疲敝</span>", b: "疲敝：人力物力衰竭，疲困不堪。", t: "出師表" },
+        { f: "此誠危急存亡之<span class='highlight'>秋</span>也", b: "秋：時刻 / 關鍵時刻。", t: "出師表" },
+        { f: "此<span class='highlight'>誠</span>危急存亡之秋也", b: "誠：實在 / 確實。", t: "出師表" },
+        { f: "不<span class='highlight'>懈</span>於內", b: "懈：懈怠 / 鬆懈。", t: "出師表" },
+        { f: "<span class='highlight'>蓋</span>追先帝之殊遇", b: "蓋：乃是 / 因為 / 由於。", t: "出師表" },
+        { f: "蓋追先帝之<span class='highlight'>殊遇</span>", b: "殊遇：特別優厚的待遇（知遇之恩）。", t: "出師表" },
+        { f: "誠宜<span class='highlight'>開張聖聽</span>", b: "開張聖聽：廣泛地聽取意見。", t: "出師表" },
+        { f: "以<span class='highlight'>光</span>先帝遺德", b: "光：發揚光大。", t: "出師表" },
+        { f: "<span class='highlight'>恢弘</span>志士之氣", b: "恢弘：發揚 / 擴大。", t: "出師表" },
+        { f: "不宜<span class='highlight'>妄自菲薄</span>", b: "妄自菲薄：過分看輕自己。", t: "出師表" },
+        { f: "<span class='highlight'>引喻失義</span>", b: "引喻失義：說話不恰當，失掉大義。", t: "出師表" },
+
+        // --- 嚴明賞罰 ---
+        { f: "宮中、<span class='highlight'>府中</span>，俱為一體", b: "府中：丞相府。", t: "出師表" },
+        { f: "<span class='highlight'>陟</span>罰臧否", b: "陟：提拔 / 晉升（2019 DSE 考點）。", t: "出師表" },
+        { f: "陟罰<span class='highlight'>臧否</span>", b: "臧：善。否：惡 / 惡行（2019 DSE 考點）。", t: "出師表" },
+        { f: "不宜<span class='highlight'>異同</span>", b: "異同：此指不同（偏義複詞，偏向「異」）。", t: "出師表" },
+        { f: "若有<span class='highlight'>作奸、犯科</span>", b: "作奸：做壞事。犯科：觸犯法律。", t: "出師表" },
+        { f: "宜付<span class='highlight'>有司</span>", b: "有司：官吏 / 職能部門。", t: "出師表" },
+        { f: "以<span class='highlight'>昭</span>陛下平明之治", b: "昭：顯示 / 彰顯。", t: "出師表" },
+
+        // --- 舉薦賢臣 ---
+        { f: "此皆良實，<span class='highlight'>志慮忠純</span>", b: "志慮：志向與心思。忠純：忠誠純粹。", t: "出師表" },
+        { f: "是以先帝<span class='highlight'>簡拔</span>以遺陛下", b: "簡拔：選拔。", t: "出師表" },
+        { f: "是以先帝簡拔以<span class='highlight'>遺</span>陛下", b: "遺：留給。", p: "粵音：[wai6] (位)", t: "出師表" },
+        { f: "悉以<span class='highlight'>咨</span>之", b: "咨：詢問 / 商議。", t: "出師表" },
+        { f: "<span class='highlight'>悉</span>以咨之", b: "悉：全部 / 盡（2019 DSE 考點）。", t: "出師表" },
+        { f: "必能<span class='highlight'>裨補闕漏</span>", b: "裨補：補救。闕漏：缺失遺漏。", t: "出師表" },
+        { f: "性行<span class='highlight'>淑均</span>", b: "淑：善。均：公正。", t: "出師表" },
+        { f: "曉暢<span class='highlight'>軍事</span>", b: "曉暢：精通。", t: "出師表" },
+        { f: "<span class='highlight'>行陣</span>和睦", b: "行陣：軍隊。", t: "出師表" },
+        { f: "優劣<span class='highlight'>得所</span>", b: "得所：得到適當的安排。", t: "出師表" },
+
+        // --- 親賢遠佞 ---
+        { f: "親賢臣，遠<span class='highlight'>小人</span>", b: "小人：指諂媚、無才德的人。", t: "出師表" },
+        { f: "此後漢所以<span class='highlight'>傾頹</span>也", b: "傾頹：傾覆衰敗。", t: "出師表" },
+        { f: "每與臣<span class='highlight'>論</span>此事", b: "論：談論 / 討論。", t: "出師表" },
+        { f: "未嘗不<span class='highlight'>嘆息痛恨</span>於桓、靈也", b: "痛恨：痛心遺憾（古義）。", t: "出師表" },
+
+        // --- 述志與報恩 ---
+        { f: "臣本<span class='highlight'>布衣</span>", b: "布衣：平民百姓。", t: "出師表" },
+        { f: "<span class='highlight'>躬</span>耕於南陽", b: "躬：親自 / 親身（2019 DSE 考點）。", t: "出師表" },
+        { f: "不求<span class='highlight'>聞達</span>於諸侯", b: "聞達：揚名做官。", t: "出師表" },
+        { f: "先帝不以臣<span class='highlight'>卑鄙</span>", b: "卑鄙：地位卑微，見識淺陋（謙詞）。", t: "出師表" },
+        { f: "<span class='highlight'>猥</span>自枉屈", b: "猥：委屈（謙詞）。", t: "出師表" },
+        { f: "三<span class='highlight'>顧</span>臣於草廬之中", b: "顧：探望 / 拜訪。", t: "出師表" },
+        { f: "<span class='highlight'>諮</span>臣以當世之事", b: "諮：詢問。", t: "出師表" },
+        { f: "由是<span class='highlight'>感激</span>", b: "感激：感動激奮（古義）。", t: "出師表" },
+        { f: "遂<span class='highlight'>許</span>先帝以驅馳", b: "許：答應 / 許諾。", t: "出師表" },
+        { f: "遂許先帝以<span class='highlight'>驅馳</span>", b: "驅馳：奔走效勞。", t: "出師表" },
+        { f: "後值<span class='highlight'>傾覆</span>", b: "傾覆：失敗 / 兵敗。", t: "出師表" },
+        { f: "受任於<span class='highlight'>敗軍之際</span>", b: "際：時候。", t: "出師表" },
+        { f: "奉命於<span class='highlight'>危難之間</span>", b: "間：時候。", t: "出師表" },
+        { f: "爾來二十有一年矣", b: "爾來：從那時以來。", t: "出師表" },
+
+        // --- 北伐決心與分職 ---
+        { f: "臨崩<span class='highlight'>寄</span>臣以大事", b: "寄：託付。", t: "出師表" },
+        { f: "<span class='highlight'>夙夜</span>憂嘆", b: "夙夜：早晚 / 整天。", t: "出師表" },
+        { f: "恐<span class='highlight'>付託</span>不效", b: "效：有成效。", t: "出師表" },
+        { f: "五月<span class='highlight'>渡瀘</span>", b: "渡瀘：渡過瀘水（深入荒涼之地）。", t: "出師表" },
+        { f: "深入<span class='highlight'>不毛</span>", b: "不毛：不長草木的地方（指荒蠻之地）。", t: "出師表" },
+        { f: "<span class='highlight'>庶竭</span>駑鈍", b: "庶：希望。竭：用盡。", t: "出師表" },
+        { f: "庶竭<span class='highlight'>駑鈍</span>", b: "駑：劣馬。鈍：刀刃不鋒利（比喻才能平庸）。", t: "出師表" },
+        { f: "<span class='highlight'>攘除</span>奸凶", b: "攘除：掃除 / 消除。", t: "出師表" },
+        { f: "至於<span class='highlight'>斟酌損益</span>", b: "斟酌：衡量。損：減少。益：增加。", t: "出師表" },
+        { f: "若無<span class='highlight'>興德之言</span>", b: "興德之言：發揚德行的建議。", t: "出師表" },
+        { f: "則責攸之、禕、允等之<span class='highlight'>咎</span>", b: "咎：過失 / 罪過。", t: "出師表" },
+        { f: "以<span class='highlight'>彰</span>其慢", b: "彰：揭露 / 表明。慢：怠慢 / 疏忽。", t: "出師表" },
+        { f: "陛下亦宜自<span class='highlight'>謀</span>", b: "謀：考慮 / 籌劃。", t: "出師表" },
+        { f: "<span class='highlight'>察納雅言</span>", b: "察納：觀察採納。雅言：正確的建議。", t: "出師表" },
+        { f: "臣不勝<span class='highlight'>受恩感激</span>", b: "不勝：極其 / 非常。", t: "出師表" }
     ]
 },
     

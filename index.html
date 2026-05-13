@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>《逍遙遊》字詞全集 - 隨機溫習版</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #3498db; --accent: #e67e22; --bg: #f0f2f5; }
+        body { font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 15px; }
+        h1 { color: var(--primary); font-size: 1.5rem; margin-bottom: 5px; }
+        .info { color: #666; margin-bottom: 20px; font-size: 0.85rem; text-align: center; }
+        
+        /* 針對手機優化的容器 */
+        .card-container { perspective: 1000px; width: 100%; max-width: 350px; height: 280px; cursor: pointer; }
+        .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 15px; }
+        .card.is-flipped { transform: rotateY(180deg); }
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; box-sizing: border-box; border-radius: 15px; text-align: center; border: 1px solid #ddd; }
+        
+        .card-front { background: white; border-bottom: 5px solid var(--secondary); }
+        .card-back { background: var(--secondary); color: white; transform: rotateY(180deg); }
+        
+        .tag { position: absolute; top: 15px; left: 15px; font-size: 0.7rem; padding: 2px 10px; border-radius: 10px; background: #f0f7ff; color: var(--secondary); font-weight: bold; }
+        .front-text { font-size: 1.3rem; color: var(--primary); font-weight: 600; line-height: 1.5; }
+        .back-text { font-size: 1.1rem; line-height: 1.6; text-align: left; width: 100%; }
+        
+        .phonetic { display: block; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 0.85rem; color: #e0f2fe; }
+        .highlight { color: var(--accent); text-decoration: underline; font-weight: bold; }
+
+        .controls { margin-top: 30px; display: flex; gap: 10px; align-items: center; width: 100%; max-width: 350px; justify-content: space-between; }
+        button { flex: 1; padding: 12px; font-size: 1rem; border: none; border-radius: 10px; cursor: pointer; background: var(--primary); color: white; }
+        .counter { font-family: monospace; font-weight: bold; font-size: 1rem; color: var(--primary); padding: 0 10px; }
+        
+        .shuffle-btn { background: var(--accent); margin-top: 15px; width: 100%; max-width: 350px; }
+    </style>
+</head>
+<body>
+
+    <h1>《逍遙遊》字詞全集</h1>
+    <div class="info">已載入 44 張字卡<br>點擊卡片翻轉，按按鈕切換</div>
+
+    <div class="card-container" onclick="this.querySelector('.card').classList.toggle('is-flipped')">
+        <div class="card" id="card">
+            <div class="card-face card-front">
+                <span class="tag" id="tag">載入中</span>
+                <div class="front-text" id="frontText">...</div>
+            </div>
+            <div class="card-face card-back">
+                <div class="back-text" id="backText">...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="prev()">◀ 上一題</button>
+        <span class="counter" id="counter">0 / 0</span>
+        <button onclick="next()">下一題 ▶</button>
+    </div>
+
+    <button class="shuffle-btn" onclick="shuffleAndReset()">重新洗牌 (隨機排序)</button>
+
+    <script>
+        // 原始數據
+        const rawData = [
+            { f: "魏王<span class='highlight'>貽</span>我大瓠之種", b: "貽：贈送 / 贈。", p: "粵音：[yi4] (兒)", t: "注釋 2" },
+            { f: "魏王貽我大<span class='highlight'>瓠</span>之種", b: "瓠：葫蘆。", p: "粵音：[wu6] (護) 或 [wu4] (胡)", t: "注釋 2" },
+            { f: "我<span class='highlight'>樹</span>之成而實五石", b: "樹：種植。", p: "", t: "注釋 3" },
+            { f: "我樹之成而<span class='highlight'>實</span>五石", b: "實：果實 / 結出的果實。", p: "", t: "注釋 3" },
+            { f: "我樹之成而實五<span class='highlight'>石</span>", b: "石：中國古代容量單位，十斗為一石。", p: "粵音：[daam3] (擔) 或 [sek6]", t: "注釋 3" },
+            { f: "其<span class='highlight'>堅</span>不能自舉也", b: "堅：硬度 / 質地堅硬。", p: "", t: "注釋 4" },
+            { f: "其堅不能自<span class='highlight'>舉</span>也", b: "舉：擎 / 舉起 / 支撐 / 拿起。", p: "", t: "注釋 4" },
+            { f: "<span class='highlight'>剖</span>之以為瓢", b: "剖：破開 / 中分。", p: "粵音：[pau2] (瓿)", t: "注釋 5" },
+            { f: "<span class='highlight'>瓠落</span>無所容", b: "瓠落：大而空廓的樣子 / 容納 / 安置。", p: "粵音：[wok6] (鑊)", t: "注釋 6" },
+            { f: "非不<span class='highlight'>呺然</span>大也", b: "呺然：虛空而巨大的樣子。", p: "粵音：[hiu1] (僥)", t: "注釋 7" },
+            { f: "吾為其無用而<span class='highlight'>掊</span>之", b: "掊：擊破。", p: "粵音：[pau2] (瓿)", t: "注釋 8" },
+            { f: "夫子固<span class='highlight'>拙於</span>用大矣", b: "拙於：不善於。", p: "", t: "注釋 9" },
+            { f: "有<span class='highlight'>善</span>為不龜手之藥者", b: "善：擅長。", p: "", t: "小測 9" },
+            { f: "不<span class='highlight'>龜手</span>之藥", b: "龜手：皮膚受凍裂開。龜：通「皸」。", p: "粵音：[gwan1] (軍)", t: "注釋 10" },
+            { f: "世世以<span class='highlight'>洴澼絖</span>為事", b: "洴澼：漂洗。<br>絖：棉絮 / 絲絮。", p: "洴澼 [ping4 pik1] 絖 [kwong3]", t: "注釋 11" },
+            { f: "聚族而<span class='highlight'>謀</span>", b: "謀：商量 / 謀劃。", p: "", t: "小測 11" },
+            { f: "今一朝而<span class='highlight'>鬻</span>技百金", b: "鬻：賣 / 出售。", p: "粵音：[juk6] (育)", t: "注釋 12" },
+            { f: "以<span class='highlight'>說</span>吳王", b: "說：遊說。", p: "粵音：[seoi3] (碎)", t: "注釋 13" },
+            { f: "吳王使之<span class='highlight'>將</span>", b: "將：領兵 (動詞)。", p: "粵音：[zoeng3] (醬)", t: "注釋 15" },
+            { f: "<span class='highlight'>或</span>以封", b: "或：有人。", p: "", t: "小測 14" },
+            { f: "何不<span class='highlight'>慮</span>以為大樽", b: "慮：考慮 / 考慮繫著。", p: "", t: "注釋 18" },
+            { f: "何不慮以為大<span class='highlight'>樽</span>", b: "樽：腰舟，助浮工具。", p: "", t: "注釋 18" },
+            { f: "則夫子猶有<span class='highlight'>蓬</span>之心也夫", b: "蓬：一種卷曲不直的草。喻心志閉塞不通。", p: "粵音：[pung4] (篷)", t: "注釋 19" },
+            { f: "人謂之<span class='highlight'>樗</span>", b: "樗：落葉喬木，木材皮粗質劣。", p: "粵音：[syu1] (書)", t: "注釋 20" },
+            { f: "其大本<span class='highlight'>擁腫</span>而不中繩墨", b: "擁腫：通「臃腫」，指樹幹盤結不平。", p: "", t: "注釋 21" },
+            { f: "不<span class='highlight'>中</span>繩墨", b: "中：符合 / 合乎。", p: "粵音：[zung3] (眾)", t: "注釋 21" },
+            { f: "其小枝卷曲而不中<span class='highlight'>規矩</span>", b: "規：畫圓工具。矩：畫方工具。", p: "", t: "注釋 22" },
+            { f: "立之<span class='highlight'>塗</span>", b: "塗：通「途」，路途 / 路上。", p: "", t: "注釋 23" },
+            { f: "眾所同<span class='highlight'>去</span>也", b: "去：離棄 / 拋棄。", p: "粵音：[heoi2] (許)", t: "注釋 24" },
+            { f: "子獨不見<span class='highlight'>狸狌</span>乎", b: "狸：野貓。<br>狌：通「鼬」，黃鼠狼。", p: "狌音：[sang1] (生)", t: "注釋 25" },
+            { f: "子<span class='highlight'>獨</span>不見狸狌乎", b: "獨：難道 / 偏偏。", p: "", t: "注釋 25" },
+            { f: "以候<span class='highlight'>敖</span>者", b: "敖：通「遨」，閒遊 / 遊逛。", p: "粵音：[ngou4] (熬)", t: "注釋 26" },
+            { f: "東西<span class='highlight'>跳梁</span>", b: "跳梁：通「踉」，跳躍。", p: "", t: "注釋 27" },
+            { f: "不<span class='highlight'>辟</span>高下", b: "辟：通「避」。", p: "", t: "注釋 27" },
+            { f: "中於<span class='highlight'>機辟</span>，死於罔罟", b: "機辟：捕捉鳥獸的工具。", p: "", t: "注釋 28" },
+            { f: "死於<span class='highlight'>罔罟</span>", b: "罔：通「網」。<br>罟：魚網。", p: "罟音：[gu2] (古)", t: "注釋 28" },
+            { f: "今夫<span class='highlight'>犛</span>牛", b: "犛牛：即旄牛。", p: "粵音：[lei4] (離)", t: "注釋 29" },
+            { f: "不能<span class='highlight'>執</span>鼠", b: "執：捕捉 / 捉。", p: "", t: "注釋 30" },
+            { f: "廣<span class='highlight'>莫</span>之野", b: "莫：通「漠」，遼闊空曠。", p: "", t: "注釋 32" },
+            { f: "<span class='highlight'>彷徨</span>乎無為其側", b: "彷徨：縱任不拘 / 隨意徜徉。", p: "", t: "注釋 33" },
+            { f: "彷徨乎無為其<span class='highlight'>側</span>", b: "側：旁邊。", p: "", t: "小測 27" },
+            { f: "不<span class='highlight'>夭</span>斤斧", b: "夭：摧折 / 砍伐。", p: "", t: "注釋 34" },
+            { f: "<span class='highlight'>安</span>所困苦哉", b: "安：何 / 哪裏。", p: "", t: "注釋 35" },
+            { f: "安所<span class='highlight'>困苦</span>哉", b: "困苦：艱難 / 艱苦。", p: "", t: "注釋 35" }
+        ];
+
+        let studyData = [];
+        let currentIdx = 0;
+
+        // 洗牌算法 (Fisher-Yates Shuffle)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function shuffleAndReset() {
+            studyData = shuffleArray([...rawData]);
+            currentIdx = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            const cardEl = document.getElementById('card');
+            cardEl.classList.remove('is-flipped');
+            
+            setTimeout(() => {
+                const item = studyData[currentIdx];
+                document.getElementById('frontText').innerHTML = item.f;
+                document.getElementById('backText').innerHTML = item.b + (item.p ? `<span class="phonetic">${item.p}</span>` : "");
+                document.getElementById('tag').innerText = item.t;
+                document.getElementById('counter').innerText = `${currentIdx + 1} / ${studyData.length}`;
+            }, 150);
+        }
+
+        function next() {
+            currentIdx = (currentIdx + 1) % studyData.length;
+            updateCard();
+        }
+
+        function prev() {
+            currentIdx = (currentIdx - 1 + studyData.length) % studyData.length;
+            updateCard();
+        }
+
+        // 頁面加載時自動洗牌
+        window.onload = shuffleAndReset;
+    </script>
+</body>
+</html>

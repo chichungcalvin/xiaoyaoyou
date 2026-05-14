@@ -84,6 +84,7 @@ cursor: pointer; touch-action: manipulation; user-select: none; transition: 0.2s
 <button class="menu-btn" onclick="startStudy('liuguolun')">六國論</button>
 <button class="menu-btn" onclick="startStudy('xiaoyaoyou')">逍遙遊(節錄)</button>
 <button class="menu-btn" onclick="startStudy('xishan')">始得西山宴遊記</button>
+<button class="menu-btn" onclick="startStudy('sentence_patterns')">📊 文言特殊句式</button>
 </div>
 </div>
 
@@ -852,6 +853,38 @@ data: [
         { f: "與萬化<span class='highlight'>冥合</span>", b: "冥合：融合為一。", t: "始得西山" },
         { f: "則知吾<span class='highlight'>嚮</span>之未始遊", b: "嚮：通「向」，從前。", t: "始得西山" },
         { f: "故為之文以<span class='highlight'>志</span>", b: "志：記述 / 記錄。", t: "始得西山" }
+    ]
+},
+
+    sentence_patterns: {
+    title: "文言特殊句式（全量精選版）",
+    data: [
+        // --- 倒裝句 (Inversion) ---
+        { f: "〈出師表〉：<span class='highlight'>不求聞達於諸侯</span>", b: "【介詞結構後置】正常語序：不於諸侯求聞達。強調「不求名利」的對象。", t: "倒裝句" },
+        { f: "〈出師表〉：<span class='highlight'>諮臣以當世之事</span>", b: "【介詞結構後置】正常語序：以當世之事諮臣。強調「詢問」的內容。", t: "倒裝句" },
+        { f: "〈魚我所欲也〉：<span class='highlight'>萬鍾於我何加焉</span>", b: "【賓語前置】「何加」即「加何」（有什麼益處）。「何」是疑問代詞，放在動詞前。", t: "倒裝句" },
+        { f: "〈始得西山〉：<span class='highlight'>以為凡是州之山有異態者，皆我有也</span>", b: "【定語後置】「山有異態者」即「有異態之山」。強調山勢的奇特姿態。", t: "倒裝句" },
+        { f: "〈始得西山〉：<span class='highlight'>遊於是乎始</span>", b: "【介詞結構後置】正常語序：於是乎始遊。強調西山之遊才是真正的開始。", t: "倒裝句" },
+
+        // --- 被動句 (Passive Voice) ---
+        { f: "〈廉頗藺相如〉：<span class='highlight'>徒見欺</span>", b: "【被動句】「見」字表示被動，解作「被欺騙」。", t: "被動句" },
+        { f: "〈廉頗藺相如〉：<span class='highlight'>而君幸於趙王</span>", b: "【被動句】「於」字引進動作主動者，解作「被趙王寵幸」。", t: "被動句" },
+        { f: "〈六國論〉：<span class='highlight'>為國者無使為積威之所劫哉</span>", b: "【被動句】「為……所……」結構。解作「被（秦國）積累的威勢所脅迫」。", t: "被動句" },
+        { f: "〈六國論〉：<span class='highlight'>洎牧以讒誅</span>", b: "【被動句】意念被動（無標誌）。解作「李牧因為讒言而被處死」。", t: "被動句" },
+
+        // --- 省略句 (Omission) ---
+        { f: "〈出師表〉：<span class='highlight'>（ ？）不宜異同</span>", b: "【省略主語】省略了「陛下」。提醒後主執行賞罰不應有兩套標準。", t: "省略句" },
+        { f: "〈魚我所欲也〉：<span class='highlight'>鄉為身死而不受（ ？）</span>", b: "【省略賓語】省略了「萬鍾」。指從前寧願死也不接受（優厚的俸祿）。", t: "省略句" },
+        { f: "〈始得西山〉：<span class='highlight'>則（ ？）披草而坐</span>", b: "【省略主語】省略了「余（我）」。寫作者隨性而遊的動作。", t: "省略句" },
+
+        // --- 判斷句 (Judgment) ---
+        { f: "〈廉頗藺相如〉：<span class='highlight'>廉頗者，趙之良將也</span>", b: "【判斷句】「……者，……也」標誌，起判斷與強調作用。", t: "判斷句" },
+        { f: "〈六國論〉：<span class='highlight'>賂秦而力虧，破滅之道也</span>", b: "【判斷句】「……也」標誌，肯定「賂秦」是滅亡的必然原因。", t: "判斷句" },
+
+        // --- 雙重否定 / 反問 (Double Negative / Rhetorical) ---
+        { f: "〈論仁〉：<span class='highlight'>不以其道得之，不處也</span>", b: "【否定句】強調君子堅守原則，即使富貴，若不合道義絕對不接受。", t: "否定句" },
+        { f: "〈魚我所欲也〉：<span class='highlight'>萬鍾則不辯禮義而受之，萬鍾於我何加焉</span>", b: "【反問句】用反問語氣強調不合禮義的俸祿對自己毫無價值。", t: "反問句" },
+        { f: "〈六國論〉：<span class='highlight'>苟以天下之大，下而從六國破滅之故事，是又在六國下矣</span>", b: "【假設句】用「苟」（如果）引導，警誡北宋統治者不要重蹈覆轍。", t: "假設句" }
     ]
 },
 };
